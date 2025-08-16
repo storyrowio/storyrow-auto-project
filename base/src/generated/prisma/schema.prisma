@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+type UserInfo {
+  address String?
+  city    String?
+  state   String?
+  country String?
+  phone   String?
+}
+
+enum AccountType {
+  BANK
+  E_WALLET
+  CASH
+  CRYPTO
+  OTHER
+}
+
+model roles {
+  id_       String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @unique
+  code      String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model users {
+  id_            String    @id @default(auto()) @map("_id") @db.ObjectId
+  id             String    @unique
+  name           String
+  email          String    @unique
+  password       String?
+  image          String?
+  socialId       String?
+  socialProvider String? // google, facebook, etc
+  info           UserInfo?
+  systemAdmin    Boolean   @default(false)
+  roleId         String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now())
+}
+
+model settings {
+  id_       String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @unique
+  code      String
+  name      String
+  setting   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model accounts {
+  id_       String      @id @default(auto()) @map("_id") @db.ObjectId
+  id        String      @unique
+  userId    String
+  name      String
+  type      AccountType
+  balance   Float       @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now())
+}
+
+model categories {
+  id_       String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @unique
+  name      String
+  type      String // income, expense, general
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model expenses {
+  id_         String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @unique
+  userId      String
+  categoryId  String
+  accountId   String
+  title       String
+  amount      Float
+  description String?
+  date        DateTime @default(now())
+  recurring   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+}
+
+model incomes {
+  id_         String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @unique
+  userId      String
+  categoryId  String
+  accountId   String
+  title       String
+  amount      Float
+  description String?
+  date        DateTime @default(now())
+  recurring   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+}
