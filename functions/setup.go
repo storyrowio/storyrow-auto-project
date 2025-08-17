@@ -90,54 +90,9 @@ func ApplyAuthPrismaTemplate(templateName string, projectPath string) error {
 
 	authFiles := []SourceDestination{
 		{Source: filepath.Join(baseDir, "eslint.config.mjs"), Destination: filepath.Join(projectPath, "eslint.config.mjs")},
+		{filepath.Join(TemplateDirectory, templateName, ".env"), filepath.Join(projectPath, ".env")},
 		{filepath.Join(TemplateDirectory, templateName, "auth.ts"), filepath.Join(projectPath, "src", "auth.ts")},
 		{filepath.Join(TemplateDirectory, templateName, "middleware.ts"), filepath.Join(projectPath, "src", "middleware.ts")},
-		{filepath.Join(TemplateDirectory, templateName, ".env"), filepath.Join(projectPath, "src", ".env")},
-	}
-
-	for _, file := range authFiles {
-		if err := os.MkdirAll(filepath.Dir(file.Destination), 0755); err != nil {
-			return fmt.Errorf("failed to create directory for %s: %w", file.Destination, err)
-		}
-
-		color.Blue(fmt.Sprintf("Copying %s file ...", file.Source))
-		if err := lib.CopyFile(file.Source, file.Destination); err != nil {
-			return fmt.Errorf("failed to copy %s: %w", file.Source, err)
-		}
-	}
-
-	for _, file := range directories {
-		if err := os.MkdirAll(filepath.Dir(file.Destination), 0755); err != nil {
-			return fmt.Errorf("failed to create directory for %s: %w", file.Destination, err)
-		}
-
-		color.Blue(fmt.Sprintf("Copying %s directory ...", file.Source))
-		if err := lib.CopyDir(file.Source, file.Destination); err != nil {
-			return fmt.Errorf("failed to copy %s: %w", file.Source, err)
-		}
-	}
-
-	return nil
-}
-
-func ApplyTemplate(templateName string) error {
-	templatePath := "./templates/" + templateName
-	_, err := os.Stat(templatePath)
-	if err != nil {
-		return err
-	}
-
-	color.Blue("Applying local template: %s", templateName)
-
-	directories := []SourceDestination{
-		{Source: "./base/src", Destination: "./src"},
-		{Source: "./templates/with-auth-prisma/api", Destination: "./src/app"},
-		{Source: "./templates/with-auth-prisma/prisma", Destination: "."},
-	}
-
-	authFiles := []SourceDestination{
-		{"./templates/with-auth-prisma/auth.ts", "./src/auth.ts"},
-		{"./templates/with-auth-prisma/middleware.ts", "./src/middleware.ts"},
 	}
 
 	for _, file := range authFiles {

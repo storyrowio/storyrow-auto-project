@@ -68,9 +68,6 @@ func runSetup(cfg *functions.Config) error {
 	functions.BaseDirectory = filepath.Join(lib.GetProjectRoot(), "base")
 
 	projectPath := filepath.Join(cfg.OutputDir, cfg.ProjectName)
-	if err := os.Chdir(projectPath); err != nil {
-		return err
-	}
 
 	// Delete later
 	_, err := os.Stat(projectPath)
@@ -93,6 +90,10 @@ func runSetup(cfg *functions.Config) error {
 	// 1. Create Next.js project
 	if err := functions.CreateNextApp(cfg); err != nil {
 		return fmt.Errorf("failed to create Next.js app: %w", err)
+	}
+
+	if err := os.Chdir(projectPath); err != nil {
+		return err
 	}
 
 	if err := functions.ApplyAuthPrismaTemplate(cfg.TemplateName, projectPath); err != nil {
