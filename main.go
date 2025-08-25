@@ -73,18 +73,18 @@ func runSetup(cfg *functions.Config) error {
 	_, err := os.Stat(projectPath)
 	if err == nil {
 		log.Println("Delete Existing Project")
-		if err := functions.DetectMissingDeps(filepath.Join(cfg.OutputDir, cfg.ProjectName)); err != nil {
-			color.Red("Warning: Dependency check failed: %v", err)
-			return fmt.Errorf("failed to install missing dependencies: %w", err)
-		}
-
-		return nil
-		//err = os.RemoveAll(filepath.Join(cfg.OutputDir, cfg.ProjectName))
-		//if err != nil {
-		//	fmt.Printf("Error removing directory and contents: %v\n", err)
-		//} else {
-		//	fmt.Printf("Directory '%s' and its contents removed successfully.\n", filepath.Join(cfg.OutputDir, cfg.ProjectName))
+		//if err := functions.DetectMissingDeps(filepath.Join(cfg.OutputDir, cfg.ProjectName)); err != nil {
+		//	color.Red("Warning: Dependency check failed: %v", err)
+		//	return fmt.Errorf("failed to install missing dependencies: %w", err)
 		//}
+		//
+		//return nil
+		err = os.RemoveAll(filepath.Join(cfg.OutputDir, cfg.ProjectName))
+		if err != nil {
+			fmt.Printf("Error removing directory and contents: %v\n", err)
+		} else {
+			fmt.Printf("Directory '%s' and its contents removed successfully.\n", filepath.Join(cfg.OutputDir, cfg.ProjectName))
+		}
 	}
 
 	// 1. Create Next.js project

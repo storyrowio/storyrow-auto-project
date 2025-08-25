@@ -82,17 +82,18 @@ func ApplyAuthPrismaTemplate(templateName string, projectPath string) error {
 
 	color.Blue("Applying local template: %s", templateName)
 
+	// Copy base files and folder
+
 	directories := []SourceDestination{
-		{Source: filepath.Join(baseDir, "src"), Destination: filepath.Join(projectPath, "src")},
-		{Source: filepath.Join(TemplateDirectory, templateName, "api"), Destination: filepath.Join(projectPath, "src", "app", "api")},
-		{Source: filepath.Join(TemplateDirectory, templateName, "prisma"), Destination: filepath.Join(projectPath, "prisma")},
+		{Source: filepath.Join(TemplateDirectory, templateName, "base", "prisma"), Destination: filepath.Join(projectPath, "prisma")},
+		{Source: filepath.Join(TemplateDirectory, templateName, "src"), Destination: filepath.Join(projectPath, "src")},
 	}
 
 	authFiles := []SourceDestination{
-		{Source: filepath.Join(baseDir, "eslint.config.mjs"), Destination: filepath.Join(projectPath, "eslint.config.mjs")},
-		{filepath.Join(TemplateDirectory, templateName, ".env"), filepath.Join(projectPath, ".env")},
-		{filepath.Join(TemplateDirectory, templateName, "auth.ts"), filepath.Join(projectPath, "src", "auth.ts")},
-		{filepath.Join(TemplateDirectory, templateName, "middleware.ts"), filepath.Join(projectPath, "src", "middleware.ts")},
+		{Source: filepath.Join(TemplateDirectory, templateName, "base", "eslint.config.mjs"), Destination: filepath.Join(projectPath, "eslint.config.mjs")},
+		{Source: filepath.Join(TemplateDirectory, templateName, "base", ".env"), Destination: filepath.Join(projectPath, ".env")},
+		//{filepath.Join(TemplateDirectory, templateName, "auth.ts"), filepath.Join(projectPath, "src", "auth.ts")},
+		//{filepath.Join(TemplateDirectory, templateName, "middleware.ts"), filepath.Join(projectPath, "src", "middleware.ts")},
 	}
 
 	for _, file := range authFiles {
