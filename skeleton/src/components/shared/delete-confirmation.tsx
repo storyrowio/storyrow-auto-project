@@ -27,14 +27,14 @@ export default function DeleteConfirmation(props: any) {
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
                         This action cannot be undone. This will permanently delete your
-                        data and remove it from our servers.
+                        account and remove your data from our servers.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
                     <AlertDialogAction disabled={loadingDelete} variant="destructive" onClick={() => {
                         onSubmit();
-                        setLoadingDelete(true);
+                        setLoadingDelete(false);
                     }}>Delete</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

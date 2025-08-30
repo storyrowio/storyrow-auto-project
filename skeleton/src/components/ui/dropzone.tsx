@@ -12,7 +12,7 @@ import {
 import { useDropzone as rootUseDropzone } from "react-dropzone";
 import {Button} from "@/components/ui/button";
 
-const fileStatusReducer = (state, action) => {
+const fileStatusReducer = (state: any, action: any) => {
   switch (action.type) {
     case "add":
       return [
@@ -26,9 +26,9 @@ const fileStatusReducer = (state, action) => {
         },
       ];
     case "remove":
-      return state.filter((fileStatus) => fileStatus.id !== action.id);
+      return state.filter((fileStatus: any) => fileStatus.id !== action.id);
     case "update-status":
-      return state.map((fileStatus) => {
+      return state.map((fileStatus: any) => {
         if (fileStatus.id === action.id) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { id, type, ...rest } = action;
@@ -48,21 +48,21 @@ const fileStatusReducer = (state, action) => {
 };
 const dropZoneErrorCodes = ["file-invalid-type", "file-too-large", "file-too-small", "too-many-files"];
 
-const getDropZoneErrorCodes = (fileRejections) => {
-  const errors = fileRejections.map((rejection) => {
+const getDropZoneErrorCodes = (fileRejections: any) => {
+  const errors = fileRejections.map((rejection: any) => {
     return rejection.errors
-      .filter((error) =>
+      .filter((error: any) =>
         dropZoneErrorCodes.includes(error.code))
-      .map((error) => error.code);
+      .map((error: any) => error.code);
   });
   return Array.from(new Set(errors.flat()));
 };
 
 const getRootError = (
-  errorCodes,
-  limits,
+  errorCodes: any,
+  limits: any,
 ) => {
-  const errors = errorCodes.map((error) => {
+  const errors = errorCodes.map((error: any) => {
     switch (error) {
       case "file-invalid-type":
         const acceptedTypes = Object.values(limits.accept ?? {})
@@ -87,7 +87,7 @@ const getRootError = (
   return joinedErrors.charAt(0).toUpperCase() + joinedErrors.slice(1);
 };
 
-const useDropzone = props => {
+const useDropzone = (props: any) => {
   const {
     onDropFile = () => {},
     onRemoveFile: pOnRemoveFile,
@@ -107,7 +107,7 @@ const useDropzone = props => {
   const rootDescriptionId = `${inputId}-description`;
   const [rootError, _setRootError] = useState(undefined);
 
-  const setRootError = useCallback((error) => {
+  const setRootError = useCallback((error: any) => {
     _setRootError(error);
     if (pOnRootError !== undefined) {
       pOnRootError(error);
@@ -117,10 +117,10 @@ const useDropzone = props => {
   const [fileStatuses, dispatch] = useReducer(fileStatusReducer, []);
 
   const isInvalid = useMemo(() => {
-    return (fileStatuses.filter((file) => file.status === "error").length > 0 || rootError !== undefined);
+    return (fileStatuses.filter((file: any) => file.status === "error").length > 0 || rootError !== undefined);
   }, [fileStatuses, rootError]);
 
-  const _uploadFile = useCallback(async (file, id, tries = 0) => {
+  const _uploadFile = useCallback(async (file: any, id: any, tries = 0) => {
     const result = await onDropFile?.(file);
 
     if (result.status === "error") {
@@ -160,32 +160,32 @@ const useDropzone = props => {
     pOnFileUploaded,
   ]);
 
-  const onRemoveFile = useCallback(async (id) => {
+  const onRemoveFile = useCallback(async (id: any) => {
     await pOnRemoveFile?.(id);
     dispatch({ type: "remove", id });
   }, [pOnRemoveFile]);
 
-  const canRetry = useCallback((id) => {
-    const fileStatus = fileStatuses.find((file) => file.id === id);
+  const canRetry = useCallback((id: any) => {
+    const fileStatus = fileStatuses.find((file: any) => file.id === id);
     return (
       fileStatus?.status === "error" &&
       fileStatus.tries < (maxRetryCount ?? Infinity)
     );
   }, [fileStatuses, maxRetryCount]);
 
-  const onRetry = useCallback(async (id) => {
+  const onRetry = useCallback(async (id: any) => {
     if (!canRetry(id)) {
       return;
     }
     dispatch({ type: "update-status", id, status: "pending" });
-    const fileStatus = fileStatuses.find((file) => file.id === id);
+    const fileStatus = fileStatuses.find((file: any) => file.id === id);
     if (!fileStatus || fileStatus.status !== "error") {
       return;
     }
     await _uploadFile(fileStatus.file, id);
   }, [canRetry, fileStatuses, _uploadFile]);
 
-  const getFileMessageId = (id) => `${inputId}-${id}-message`;
+  const getFileMessageId = (id: any) => `${inputId}-${id}-message`;
 
   const dropzone = rootUseDropzone({
     accept: validation?.accept,
@@ -251,10 +251,10 @@ const useDropzone = props => {
 
 const DropZoneContext = createContext({
   getRootProps: () => ({}),
-  getInputProps: () => ({}),
-  onRemoveFile: async () => {},
-  onRetry: async () => {},
-  canRetry: () => false,
+  getInputProps: (p0: { style: { display: undefined; }; className: string; tabIndex: undefined; }) => ({}),
+  onRemoveFile: async (fileId: any) => {},
+  onRetry: async (fileId: any) => {},
+  canRetry: (fileId: any) => false,
   fileStatuses: [],
   isInvalid: false,
   isDragActive: false,
@@ -262,28 +262,27 @@ const DropZoneContext = createContext({
   inputId: "",
   rootMessageId: "",
   rootDescriptionId: "",
-  getFileMessageId: () => "",
+  getFileMessageId: (fileId: any) => "",
 });
 
 const useDropzoneContext = () => {
   return useContext(DropZoneContext);
 };
 
-const Dropzone = props => {
+const Dropzone = (props: any) => {
   const { children, ...rest } = props;
   return (<DropZoneContext.Provider value={rest}>{children}</DropZoneContext.Provider>);
 };
 Dropzone.displayName = "Dropzone";
 
-const DropZoneArea = forwardRef(({ className, children, ...props }, forwardedRef) => {
+const DropZoneArea = forwardRef(({ className, children, ...props }: any, forwardedRef) => {
   const context = useDropzoneContext();
 
   if (!context) {
     throw new Error("DropzoneArea must be used within a Dropzone");
   }
 
-  const { onFocus, onBlur, onDragEnter, onDragLeave, onDrop, ref } =
-    context.getRootProps();
+  const { onFocus, onBlur, onDragEnter, onDragLeave, onDrop, ref }: any = context.getRootProps();
 
   return (
     <div
@@ -316,7 +315,7 @@ const DropZoneArea = forwardRef(({ className, children, ...props }, forwardedRef
 DropZoneArea.displayName = "DropZoneArea";
 
 const DropzoneDescription = forwardRef((props, ref) => {
-  const { className, ...rest } = props;
+  const { className, ...rest }: any = props;
   const context = useDropzoneContext();
   if (!context) {
     throw new Error("DropzoneDescription must be used within a Dropzone");
@@ -345,7 +344,7 @@ const useDropzoneFileListContext = () => {
   return useContext(DropzoneFileListContext);
 };
 
-const DropzoneFileList = forwardRef((props, ref) => {
+const DropzoneFileList = forwardRef((props: any, ref: any) => {
   const context = useDropzoneContext();
   if (!context) {
     throw new Error("DropzoneFileList must be used within a Dropzone");
@@ -362,7 +361,7 @@ const DropzoneFileList = forwardRef((props, ref) => {
 });
 DropzoneFileList.displayName = "DropzoneFileList";
 
-const DropzoneFileListItem = forwardRef(({ className, ...props }, ref) => {
+const DropzoneFileListItem = forwardRef(({ className, ...props }: any, ref: any) => {
   const fileId = props.file.id;
   const {
     onRemoveFile: cOnRemoveFile,
@@ -402,9 +401,9 @@ const DropzoneFileListItem = forwardRef(({ className, ...props }, ref) => {
 });
 DropzoneFileListItem.displayName = "DropzoneFileListItem";
 
-const DropzoneFileMessage = forwardRef((props, ref) => {
-  const { children, ...rest } = props;
-  const context = useDropzoneFileListContext();
+const DropzoneFileMessage = forwardRef((props: any, ref: any) => {
+  const { children, ...rest }: any = props;
+  const context: any = useDropzoneFileListContext();
   if (!context) {
     throw new Error("DropzoneFileMessage must be used within a DropzoneFileListItem");
   }
@@ -425,8 +424,8 @@ const DropzoneFileMessage = forwardRef((props, ref) => {
 });
 DropzoneFileMessage.displayName = "DropzoneFileMessage";
 
-const DropzoneMessage = forwardRef((props, ref) => {
-  const { children, ...rest } = props;
+const DropzoneMessage = forwardRef((props: any, ref: any) => {
+  const { children, ...rest }: any = props;
   const context = useDropzoneContext();
   if (!context) {
     throw new Error("DropzoneRootMessage must be used within a Dropzone");
@@ -445,7 +444,7 @@ const DropzoneMessage = forwardRef((props, ref) => {
 });
 DropzoneMessage.displayName = "DropzoneMessage";
 
-const DropzoneRemoveFile = forwardRef(({ className, ...props }, ref) => {
+const DropzoneRemoveFile = forwardRef(({ className, ...props }: any, ref: any) => {
   const context = useDropzoneFileListContext();
   if (!context) {
     throw new Error("DropzoneRemoveFile must be used within a DropzoneFileListItem");
@@ -465,7 +464,7 @@ const DropzoneRemoveFile = forwardRef(({ className, ...props }, ref) => {
 });
 DropzoneRemoveFile.displayName = "DropzoneRemoveFile";
 
-const DropzoneRetryFile = forwardRef(({ className, ...props }, ref) => {
+const DropzoneRetryFile = forwardRef(({ className, ...props }: any, ref: any) => {
   const context = useDropzoneFileListContext();
 
   if (!context) {
@@ -491,7 +490,7 @@ const DropzoneRetryFile = forwardRef(({ className, ...props }, ref) => {
 });
 DropzoneRetryFile.displayName = "DropzoneRetryFile";
 
-const DropzoneTrigger = forwardRef(({ className, children, ...props }, ref) => {
+const DropzoneTrigger = forwardRef(({ className, children, ...props }: any, ref: any) => {
   const context = useDropzoneContext();
   if (!context) {
     throw new Error("DropzoneTrigger must be used within a Dropzone");
@@ -500,8 +499,8 @@ const DropzoneTrigger = forwardRef(({ className, children, ...props }, ref) => {
   const { fileStatuses, getFileMessageId } = context;
 
   const fileMessageIds = useMemo(() =>
-    fileStatuses?.filter((file) => file.status === "error")
-      .map((file) => getFileMessageId(file.id)), [fileStatuses, getFileMessageId]);
+    fileStatuses?.filter((file: any) => file.status === "error")
+      .map((file: any) => getFileMessageId(file.id)), [fileStatuses, getFileMessageId]);
 
   return (
     <label
@@ -537,7 +536,7 @@ const valueTextMap = {
   error: "error",
 };
 
-const InfiniteProgress = forwardRef(({ className, ...props }, ref) => {
+const InfiniteProgress = forwardRef(({ className, ...props }: any, ref: any) => {
   const done = props.status === "success" || props.status === "error";
   const error = props.status === "error";
   return (
@@ -546,7 +545,7 @@ const InfiniteProgress = forwardRef(({ className, ...props }, ref) => {
       role="progressbar"
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-valuetext={valueTextMap[props.status]}
+      aria-valuetext={valueTextMap[props.status as keyof typeof valueTextMap]}
       {...props}
       className={cn("relative h-2 w-full overflow-hidden rounded-full bg-muted", className)}>
       <div

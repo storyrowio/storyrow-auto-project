@@ -4,7 +4,7 @@ import { isNodeInSchema } from "@/lib/tiptap-utils"
 import {TextQuote} from "lucide-react";
 import {Button} from "@/components/ui/button";
 
-export function canToggleBlockquote(editor) {
+export function canToggleBlockquote(editor: any) {
   if (!editor) return false
 
   try {
@@ -14,24 +14,24 @@ export function canToggleBlockquote(editor) {
   }
 }
 
-export function isBlockquoteActive(editor) {
+export function isBlockquoteActive(editor: any) {
   if (!editor) return false
   return editor.isActive("blockquote");
 }
 
-export function toggleBlockquote(editor) {
+export function toggleBlockquote(editor: any) {
   if (!editor) return false
   return editor.chain().focus().toggleWrap("blockquote").run();
 }
 
-export function isBlockquoteButtonDisabled(editor, canToggle, userDisabled = false) {
+export function isBlockquoteButtonDisabled(editor: any, canToggle: any, userDisabled = false) {
   if (!editor) return true
   if (userDisabled) return true
   if (!canToggle) return true
   return false
 }
 
-export function shouldShowBlockquoteButton(params) {
+export function shouldShowBlockquoteButton(params: any) {
   const { editor, hideWhenUnavailable, nodeInSchema, canToggle } = params
 
   if (!nodeInSchema || !editor) {
@@ -48,7 +48,7 @@ export function shouldShowBlockquoteButton(params) {
 }
 
 export function useBlockquoteState(
-  editor,
+  editor: any,
   disabled = false,
   hideWhenUnavailable = false
 ) {
@@ -98,7 +98,7 @@ export const BlockquoteButton = React.forwardRef((
     onClick,
     children,
     ...buttonProps
-  },
+  }: any,
   ref
 ) => {
   const {
@@ -110,7 +110,7 @@ export const BlockquoteButton = React.forwardRef((
     label,
   } = useBlockquoteState(editor, disabled, hideWhenUnavailable)
 
-  const handleClick = React.useCallback((e) => {
+  const handleClick = React.useCallback((e: any) => {
     onClick?.(e)
 
     if (!e.defaultPrevented && !isDisabled) {

@@ -6,7 +6,7 @@ export const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
  * @param editor - The editor instance
  * @returns boolean indicating if the mark exists in the schema
  */
-export const isMarkInSchema = (markName, editor) => {
+export const isMarkInSchema = (markName: any, editor: any) => {
   if (!editor?.schema) return false
   return editor.schema.spec.marks.get(markName) !== undefined;
 }
@@ -17,7 +17,7 @@ export const isMarkInSchema = (markName, editor) => {
  * @param editor - The editor instance
  * @returns boolean indicating if the node exists in the schema
  */
-export const isNodeInSchema = (nodeName, editor) => {
+export const isNodeInSchema = (nodeName: any, editor: any) => {
   if (!editor?.schema) return false
   return editor.schema.spec.nodes.get(nodeName) !== undefined;
 }
@@ -29,11 +29,11 @@ export const isNodeInSchema = (nodeName, editor) => {
  * @param markName - The name of the mark to look for (e.g., "highlight", "link").
  * @returns The attributes of the active mark, or `null` if the mark is not active.
  */
-export function getActiveMarkAttrs(editor, markName) {
+export function getActiveMarkAttrs(editor: any, markName: any) {
   if (!editor) return null
   const { state } = editor
   const marks = state.storedMarks || state.selection.$from.marks()
-  const mark = marks.find((mark) => mark.type.name === markName)
+  const mark = marks.find((mark: any) => mark.type.name === markName)
 
   return mark?.attrs ?? null
 }
@@ -41,7 +41,7 @@ export function getActiveMarkAttrs(editor, markName) {
 /**
  * Checks if a node is empty
  */
-export function isEmptyNode(node) {
+export function isEmptyNode(node: any) {
   return !!node && node.content.size === 0
 }
 
@@ -52,7 +52,7 @@ export function isEmptyNode(node) {
  * @param classes - List of class name strings or falsey values.
  * @returns A single space-separated string of valid class names.
  */
-export function cn(...classes) {
+export function cn(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -64,7 +64,7 @@ export function cn(...classes) {
  * @param props.nodePos The position of the node to find (optional if node is provided)
  * @returns An object with the position and node, or null if not found
  */
-export function findNodePosition(props) {
+export function findNodePosition(props: any) {
   const { editor, node, nodePos } = props
 
   if (!editor || !editor.state?.doc) return null
@@ -93,7 +93,7 @@ export function findNodePosition(props) {
   let foundPos = -1
   let foundNode = null
 
-  editor.state.doc.descendants((currentNode, pos) => {
+  editor.state.doc.descendants((currentNode: any, pos: any) => {
     // TODO: Needed?
     // if (currentNode.type && currentNode.type.name === node!.type.name) {
     if (currentNode === node) {
@@ -116,7 +116,7 @@ export function findNodePosition(props) {
  * @param abortSignal Optional AbortSignal for cancelling the upload
  * @returns Promise resolving to the URL of the uploaded image
  */
-export const handleImageUpload = async (file, onProgress, abortSignal) => {
+export const handleImageUpload = async (file: any, onProgress: any, abortSignal: any) => {
   // Validate file
   if (!file) {
     throw new Error("No file provided")
@@ -147,7 +147,7 @@ export const handleImageUpload = async (file, onProgress, abortSignal) => {
  * @param abortSignal Optional AbortSignal for cancelling the conversion
  * @returns Promise resolving to the base64 representation of the file
  */
-export const convertFileToBase64 = (file, abortSignal) => {
+export const convertFileToBase64 = (file: any, abortSignal: any) => {
   if (!file) {
     return Promise.reject(new Error("No file provided"));
   }
@@ -183,13 +183,12 @@ export const convertFileToBase64 = (file, abortSignal) => {
 }
 
 const ATTR_WHITESPACE =
-  // eslint-disable-next-line no-control-regex
   /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205F\u3000]/g
 
 export function isAllowedUri(
-  uri,
-  protocols
-) {
+  uri: any,
+  protocols: any
+): any {
   const allowedProtocols = [
     "http",
     "https",
@@ -204,7 +203,7 @@ export function isAllowedUri(
   ]
 
   if (protocols) {
-    protocols.forEach((protocol) => {
+    protocols.forEach((protocol: any) => {
       const nextProtocol =
         typeof protocol === "string" ? protocol : protocol.scheme
 
@@ -214,11 +213,11 @@ export function isAllowedUri(
     })
   }
 
-  return (!uri || uri.replace(ATTR_WHITESPACE, "").match(new RegExp(// eslint-disable-next-line no-useless-escape
+  return (!uri || uri.replace(ATTR_WHITESPACE, "").match(new RegExp(
   `^(?:(?:${allowedProtocols.join("|")}):|[^a-z]|[a-z0-9+.\-]+(?:[^a-z+.\-:]|$))`, "i")));
 }
 
-export function sanitizeUrl(inputUrl, baseUrl, protocols) {
+export function sanitizeUrl(inputUrl: any, baseUrl: any, protocols: any) {
   try {
     const url = new URL(inputUrl, baseUrl)
 

@@ -25,7 +25,7 @@ export const historyActionLabels = {
  * @param action The history action to check
  * @returns Whether the action can be executed
  */
-export function canExecuteHistoryAction(editor, action) {
+export function canExecuteHistoryAction(editor: any, action: any) {
   if (!editor) return false
   return action === "undo" ? editor.can().undo() : editor.can().redo();
 }
@@ -37,7 +37,7 @@ export function canExecuteHistoryAction(editor, action) {
  * @param action The history action to execute
  * @returns Whether the action was executed successfully
  */
-export function executeHistoryAction(editor, action) {
+export function executeHistoryAction(editor: any, action: any) {
   if (!editor) return false
   const chain = editor.chain().focus()
   return action === "undo" ? chain.undo().run() : chain.redo().run();
@@ -51,7 +51,7 @@ export function executeHistoryAction(editor, action) {
  * @param userDisabled Whether the action is explicitly disabled by the user
  * @returns Whether the action should be disabled
  */
-export function isHistoryActionDisabled(editor, action, userDisabled = false) {
+export function isHistoryActionDisabled(editor: any, action: any, userDisabled = false) {
   if (userDisabled) return true
   return !canExecuteHistoryAction(editor, action);
 }
@@ -65,8 +65,8 @@ export function isHistoryActionDisabled(editor, action, userDisabled = false) {
  * @returns Object containing state and handlers for the history action
  */
 export function useHistoryAction(
-  editor,
-  action,
+  editor: any,
+  action: any,
   disabled = false
 ) {
   const canExecute = React.useMemo(() => canExecuteHistoryAction(editor, action), [editor, action])
@@ -78,9 +78,9 @@ export function useHistoryAction(
     executeHistoryAction(editor, action)
   }, [editor, action, isDisabled])
 
-  const Icon = historyIcons[action]
-  const actionLabel = historyActionLabels[action]
-  const shortcutKey = historyShortcutKeys[action]
+  const Icon = historyIcons[action as keyof typeof historyIcons]
+  const actionLabel = historyActionLabels[action as keyof typeof historyActionLabels]
+  const shortcutKey = historyShortcutKeys[action as keyof typeof historyShortcutKeys]
 
   return {
     canExecute,
@@ -105,13 +105,13 @@ export const UndoRedoButton = React.forwardRef((
     onClick,
     children,
     ...buttonProps
-  },
+  }: any,
   ref
 ) => {
   const { isDisabled, handleAction, Icon, actionLabel, shortcutKey } =
     useHistoryAction(editor, action, disabled)
 
-  const handleClick = React.useCallback((e) => {
+  const handleClick = React.useCallback((e: any) => {
     onClick?.(e)
 
     if (!e.defaultPrevented && !disabled) {

@@ -52,8 +52,6 @@ export interface SidebarMenuItem {
 
 export interface SidebarMenuGroup {
     title: string;
-    system?: boolean;
-    role?: string;
     items: SidebarMenuItem[]
 }
 
@@ -61,4 +59,9 @@ export interface ListFilter {
     keyword?: string;
     sort?: string;
     [key: string]: unknown;
+}
+
+export interface DefaultComponent {
+    className?: string;
+    [key: string]: unknown | null | undefined | any;
 }

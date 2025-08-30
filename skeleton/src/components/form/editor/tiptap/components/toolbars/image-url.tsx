@@ -13,9 +13,9 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {useState} from "react";
 
-export default function AddImageUrl({ editor }) {
-    const [open, setOpen] = useState(false);
-    const [url, setUrl] = useState(null);
+export default function AddImageUrl({ editor }: any) {
+    const [open, setOpen] = useState<boolean>(false);
+    const [url, setUrl] = useState<any>(null);
 
     const handleSubmit = () => {
         setOpen(false);

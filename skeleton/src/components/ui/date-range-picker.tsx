@@ -11,8 +11,8 @@ import {
     SelectTrigger,
     SelectValue
 } from './select'
+import { ChevronUpIcon, ChevronDownIcon, CheckIcon } from '@radix-ui/react-icons'
 import { cn } from '@/lib/utils'
-import {CheckIcon, ChevronDownIcon, ChevronUpIcon} from "lucide-react";
 
 export interface DateRangePickerProps {
     onUpdate?: (values: { range: DateRange }) => void
@@ -37,7 +37,7 @@ interface DateParts {
 }
 
 const formatDate = (date: Date, locale: string = 'en-us'): string => {
-    return date?.toLocaleDateString(locale, {
+    return date.toLocaleDateString(locale, {
         month: 'short',
         day: 'numeric',
         year: 'numeric'
@@ -469,7 +469,7 @@ export default function DateRangePicker(props: any) {
 
     useEffect(() => {
         checkPreset()
-    }, [range])
+    }, [checkPreset, range])
 
     const PresetButton = ({
                               preset,
@@ -509,7 +509,7 @@ export default function DateRangePicker(props: any) {
         if (isOpen) {
             openedRangeRef.current = range
         }
-    }, [isOpen])
+    }, [isOpen, range])
 
     return (
         <Popover

@@ -39,7 +39,7 @@ function ChartContainer({
                             children,
                             config,
                             ...props
-                        }: React.ComponentProps<"div"> & {
+                        }: any & {
     config: ChartConfig
     children: React.ComponentProps<
         typeof RechartsPrimitive.ResponsiveContainer
@@ -256,7 +256,7 @@ function ChartLegendContent({
                                 verticalAlign = "bottom",
                                 nameKey,
                             }: React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+    Pick<RechartsPrimitive.LegendProps, any> & {
     hideIcon?: boolean
     nameKey?: string
 } & any) {

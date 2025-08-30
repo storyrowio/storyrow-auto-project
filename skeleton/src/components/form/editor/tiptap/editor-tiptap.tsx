@@ -31,13 +31,13 @@ const editorProps = {
     }
 };
 
-const options: never = {
+const options: any = {
     content,
     editorProps,
     extensions
 }
 
-const EditorTiptap = (props) => {
+const EditorTiptap = (props: any) => {
     const { onChange, initialValue } = props;
     const editor: Editor | null = useEditor(options);
 
@@ -53,13 +53,13 @@ const EditorTiptap = (props) => {
         if (onChange) {
             onChange(editor?.getHTML());
         }
-    }, [editor]);
+    }, [editor, onChange]);
 
     return (
         <>
             <EditorTiptapToolbar editor={editor}/>
             <EditorContent editor={editor} />
-            <BubbleMenu editor={editor} className="p-2 bg-gray-50 shadow-sm border border-gray-200 rounded-lg">
+            <BubbleMenu editor={editor || undefined} className="p-2 bg-gray-50 shadow-sm border border-gray-200 rounded-lg">
                 <TextStyle editor={editor}/>
             </BubbleMenu>
         </>

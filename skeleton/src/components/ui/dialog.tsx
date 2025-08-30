@@ -48,7 +48,7 @@ function DialogContent({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content>) {
+}: React.ComponentProps<typeof DialogPrimitive.Content> | any) {
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />

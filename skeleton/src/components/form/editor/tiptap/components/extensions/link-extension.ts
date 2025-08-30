@@ -14,10 +14,10 @@ export const Link = TiptapLink.extend({
   },
 
   addProseMirrorPlugins() {
-    const { editor } = this
+    const { editor, parent }: any = this
 
     return [
-      ...(this.parent?.() || []),
+      ...(parent?.() || []),
       new Plugin({
         props: {
           handleKeyDown: (_, event) => {

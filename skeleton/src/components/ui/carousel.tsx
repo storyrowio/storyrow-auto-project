@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
-const CarouselContext = React.createContext(null)
+const CarouselContext = React.createContext<any>(null)
 
 function useCarousel() {
   const context = React.useContext(CarouselContext)
@@ -26,7 +26,7 @@ function Carousel({
   children,
   ...props
 }: {[key: string]: any | unknown}) {
-  const [carouselRef, api] = useEmblaCarousel<any>({
+  const [carouselRef, api] = useEmblaCarousel({
     ...opts,
     axis: orientation === "horizontal" ? "x" : "y",
   }, plugins)

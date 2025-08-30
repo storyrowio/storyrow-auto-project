@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Bold, HighlighterIcon, Italic, Strikethrough, UnderlineIcon } from 'lucide-react';
 
-export default function TextStyle({ editor }) {
+export default function TextStyle({ editor }: any) {
     return (
         <>
             <Button variant="ghost" onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'is-active' : 'font-bold'}>

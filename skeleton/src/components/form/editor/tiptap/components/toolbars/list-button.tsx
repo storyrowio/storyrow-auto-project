@@ -22,13 +22,13 @@ export const listOptions = [
   },
 ]
 
-export const listShortcutKeys = {
+export const listShortcutKeys: object = {
   bulletList: "Ctrl-Shift-8",
   orderedList: "Ctrl-Shift-7",
   taskList: "Ctrl-Shift-9",
 }
 
-export function canToggleList(editor, type) {
+export function canToggleList(editor: any, type: any) {
   if (!editor) {
     return false
   }
@@ -45,7 +45,7 @@ export function canToggleList(editor, type) {
   }
 }
 
-export function isListActive(editor, type) {
+export function isListActive(editor: any, type: any) {
   if (!editor) return false
 
   switch (type) {
@@ -60,7 +60,7 @@ export function isListActive(editor, type) {
   }
 }
 
-export function toggleList(editor, type) {
+export function toggleList(editor: any, type: any) {
   if (!editor) return
 
   switch (type) {
@@ -76,11 +76,11 @@ export function toggleList(editor, type) {
   }
 }
 
-export function getListOption(type) {
+export function getListOption(type: any) {
   return listOptions.find((option) => option.type === type);
 }
 
-export function shouldShowListButton(params) {
+export function shouldShowListButton(params: any) {
   const { editor, type, hideWhenUnavailable, listInSchema } = params
 
   if (!listInSchema || !editor) {
@@ -99,11 +99,11 @@ export function shouldShowListButton(params) {
   return true
 }
 
-export function useListState(editor, type) {
+export function useListState(editor: any, type: any) {
   const listInSchema = isNodeInSchema(type, editor)
   const listOption = getListOption(type)
   const isActive = isListActive(editor, type)
-  const shortcutKey = listShortcutKeys[type]
+  const shortcutKey = listShortcutKeys[type as keyof typeof listShortcutKeys]
 
   return {
     listInSchema,
@@ -123,14 +123,14 @@ export const ListButton = React.forwardRef((
     text,
     children,
     ...buttonProps
-  },
+  }: any,
   ref
 ) => {
   const { listInSchema, listOption, isActive, shortcutKey } = useListState(editor, type)
 
   const Icon = listOption?.icon || ListIcon
 
-  const handleClick = React.useCallback((e) => {
+  const handleClick = React.useCallback((e: any) => {
     onClick?.(e)
 
     if (!e.defaultPrevented && editor) {

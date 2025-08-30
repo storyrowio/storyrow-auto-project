@@ -1,5 +1,4 @@
 import UndoRedoButton from '@/components/form/editor/tiptap/components/toolbars/undo-redo-button';
-import { Separator } from '@radix-ui/react-select';
 import HeadingDropdown from '@/components/form/editor/tiptap/components/toolbars/heading-dropdown';
 import TextStyle from '@/components/form/editor/tiptap/components/toolbars/text-style';
 import TextAlign from '@/components/form/editor/tiptap/components/toolbars/text-align';
@@ -7,8 +6,9 @@ import ListDropdownMenu from '@/components/form/editor/tiptap/components/toolbar
 import CodeBlockButton from '@/components/form/editor/tiptap/components/toolbars/code-block-button';
 import BlockquoteButton from '@/components/form/editor/tiptap/components/toolbars/blockquote-button';
 import AddImageUrl from '@/components/form/editor/tiptap/components/toolbars/image-url';
+import {Separator} from "@/components/ui/separator";
 
-export default function EditorTiptapToolbar({ editor }) {
+export default function EditorTiptapToolbar({ editor }: any) {
     return (
         <div className="pb-1 border-b border-gray-200">
             <div className="flex flex-wrap items-center gap-1">

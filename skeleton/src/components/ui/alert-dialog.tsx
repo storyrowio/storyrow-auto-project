@@ -3,6 +3,7 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+import {DefaultComponent} from "@/types";
 
 function AlertDialog({
   ...props
@@ -25,7 +26,7 @@ function AlertDialogPortal({
 function AlertDialogOverlay({
   className,
   ...props
-}: {[x: string]: any}) {
+}: DefaultComponent) {
   return (
     <AlertDialogPrimitive.Overlay
       data-slot="alert-dialog-overlay"
@@ -40,7 +41,7 @@ function AlertDialogOverlay({
 function AlertDialogContent({
   className,
   ...props
-}: {[x: string]: any}) {
+}: DefaultComponent) {
   return (
     <AlertDialogPortal>
       <AlertDialogOverlay />
@@ -58,7 +59,7 @@ function AlertDialogContent({
 function AlertDialogHeader({
   className,
   ...props
-}: {[x: string]: any}) {
+}: DefaultComponent) {
   return (
     <div
       data-slot="alert-dialog-header"
@@ -70,7 +71,7 @@ function AlertDialogHeader({
 function AlertDialogFooter({
   className,
   ...props
-}: {[x: string]: any}) {
+}: DefaultComponent) {
   return (
     <div
       data-slot="alert-dialog-footer"
@@ -82,7 +83,7 @@ function AlertDialogFooter({
 function AlertDialogTitle({
   className,
   ...props
-}: {[x: string]: any}) {
+}: DefaultComponent) {
   return (
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
@@ -94,7 +95,7 @@ function AlertDialogTitle({
 function AlertDialogDescription({
   className,
   ...props
-}: any) {
+}: DefaultComponent) {
   return (
     <AlertDialogPrimitive.Description
       data-slot="alert-dialog-description"
@@ -107,14 +108,14 @@ function AlertDialogAction({
   className,
     variant,
   ...props
-}: {[x: string]: any}) {
+}: DefaultComponent) {
   return (<AlertDialogPrimitive.Action className={cn(buttonVariants({ variant }), className)} {...props} />);
 }
 
 function AlertDialogCancel({
   className,
   ...props
-}: {[x: string]: any}) {
+}: DefaultComponent) {
   return (
     <AlertDialogPrimitive.Cancel
       className={cn(buttonVariants({ variant: "outline" }), className)}

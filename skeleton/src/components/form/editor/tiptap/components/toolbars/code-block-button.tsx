@@ -4,7 +4,7 @@ import { isNodeInSchema } from "@/lib/tiptap-utils"
 import {Button} from "@/components/ui/button";
 import {FileCode2} from "lucide-react";
 
-export function canToggleCodeBlock(editor) {
+export function canToggleCodeBlock(editor: any) {
   if (!editor) return false
 
   try {
@@ -14,24 +14,24 @@ export function canToggleCodeBlock(editor) {
   }
 }
 
-export function isCodeBlockActive(editor) {
+export function isCodeBlockActive(editor: any) {
   if (!editor) return false
   return editor.isActive("codeBlock");
 }
 
-export function toggleCodeBlock(editor) {
+export function toggleCodeBlock(editor: any) {
   if (!editor) return false
   return editor.chain().focus().toggleNode("codeBlock", "paragraph").run();
 }
 
-export function isCodeBlockButtonDisabled(editor, canToggle, userDisabled = false) {
+export function isCodeBlockButtonDisabled(editor: any, canToggle: any, userDisabled = false) {
   if (!editor) return true
   if (userDisabled) return true
   if (!canToggle) return true
   return false
 }
 
-export function shouldShowCodeBlockButton(params) {
+export function shouldShowCodeBlockButton(params: any) {
   const { editor, hideWhenUnavailable, nodeInSchema, canToggle } = params
 
   if (!nodeInSchema || !editor) {
@@ -48,7 +48,7 @@ export function shouldShowCodeBlockButton(params) {
 }
 
 export function useCodeBlockState(
-  editor,
+  editor: any,
   disabled = false,
   hideWhenUnavailable = false
 ) {
@@ -98,7 +98,7 @@ export const CodeBlockButton = React.forwardRef((
     onClick,
     children,
     ...buttonProps
-  },
+  } : any,
   ref
 ) => {
   const {
@@ -110,7 +110,7 @@ export const CodeBlockButton = React.forwardRef((
     label,
   } = useCodeBlockState(editor, disabled, hideWhenUnavailable)
 
-  const handleClick = React.useCallback((e) => {
+  const handleClick = React.useCallback((e: any) => {
     onClick?.(e)
 
     if (!e.defaultPrevented && !isDisabled) {

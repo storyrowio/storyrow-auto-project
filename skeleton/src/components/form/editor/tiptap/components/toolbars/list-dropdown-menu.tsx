@@ -12,21 +12,21 @@ import {
 import {Button} from "@/components/ui/button";
 import {ChevronDownIcon, ListIcon} from "lucide-react";
 
-export function canToggleAnyList(editor, listTypes) {
+export function canToggleAnyList(editor: any, listTypes: any) {
   if (!editor) return false
-  return listTypes.some((type) => canToggleList(editor, type));
+  return listTypes.some((type: any) => canToggleList(editor, type));
 }
 
-export function isAnyListActive(editor, listTypes) {
+export function isAnyListActive(editor: any, listTypes: any) {
   if (!editor) return false
-  return listTypes.some((type) => isListActive(editor, type));
+  return listTypes.some((type: any) => isListActive(editor, type));
 }
 
-export function getFilteredListOptions(availableTypes) {
+export function getFilteredListOptions(availableTypes: any) {
   return listOptions.filter((option) => !option.type || availableTypes.includes(option.type));
 }
 
-export function shouldShowListDropdown(params) {
+export function shouldShowListDropdown(params: any) {
   const { editor, hideWhenUnavailable, listInSchema, canToggleAny } = params
 
   if (!listInSchema || !editor) {
@@ -43,12 +43,12 @@ export function shouldShowListDropdown(params) {
 }
 
 export function useListDropdownState(
-    editor,
-    availableTypes
+    editor: any,
+    availableTypes: any
 ) {
   const [isOpen, setIsOpen] = React.useState(false)
 
-  const listInSchema = availableTypes.some((type) =>
+  const listInSchema = availableTypes.some((type: any) =>
       isNodeInSchema(type, editor))
 
   const filteredLists = React.useMemo(() => getFilteredListOptions(availableTypes), [availableTypes])
@@ -56,7 +56,7 @@ export function useListDropdownState(
   const canToggleAny = canToggleAnyList(editor, availableTypes)
   const isAnyActive = isAnyListActive(editor, availableTypes)
 
-  const handleOpenChange = React.useCallback((open, callback) => {
+  const handleOpenChange = React.useCallback((open: boolean, callback: any) => {
     setIsOpen(open)
     callback?.(open)
   }, [])
@@ -73,11 +73,11 @@ export function useListDropdownState(
 }
 
 export function useActiveListIcon(
-    editor,
-    filteredLists
+    editor: any,
+    filteredLists: any
 ) {
   return React.useCallback(() => {
-    const activeOption = filteredLists.find((option) =>
+    const activeOption = filteredLists.find((option: any) =>
         isListActive(editor, option.type))
 
     return activeOption ? (
@@ -94,7 +94,7 @@ export function ListDropdownMenu({
                                    hideWhenUnavailable = false,
                                    onOpenChange,
                                    ...props
-                                 }) {
+                                 }: any) {
   const {
     isOpen,
     listInSchema,
@@ -117,7 +117,7 @@ export function ListDropdownMenu({
   }, [editor, types, hideWhenUnavailable, listInSchema, canToggleAny])
 
   const handleOnOpenChange = React.useCallback(
-      (open) => handleOpenChange(open, onOpenChange),
+      (open: boolean) => handleOpenChange(open, onOpenChange),
       [handleOpenChange, onOpenChange]
   )
 
@@ -143,7 +143,7 @@ export function ListDropdownMenu({
           </DropdownMenuTrigger>
           <DropdownMenuContent>
               <DropdownMenuGroup>
-                  {filteredLists.map((option) => (
+                  {filteredLists.map((option: any) => (
                       <DropdownMenuItem key={option.type} asChild className="mb-1">
                           <ListButton
                               editor={editor}

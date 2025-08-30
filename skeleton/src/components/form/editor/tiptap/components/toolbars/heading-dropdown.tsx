@@ -9,8 +9,8 @@ import {Button} from "@/components/ui/button";
 import {useMemo, useState} from "react";
 import {ChevronDown} from "lucide-react";
 
-export default function HeadingDropdown({ editor }) {
-    const [activeOption, setActiveOption] = useState({});
+export default function HeadingDropdown({ editor }: any) {
+    const [activeOption, setActiveOption] = useState<any>({});
 
     const options = useMemo(() => {
         if (editor === null) {

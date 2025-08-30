@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { AlignCenter, AlignJustify, AlignLeft, AlignRight } from 'lucide-react';
 
-export default function TextAlign({ editor }) {
+export default function TextAlign({ editor }: any) {
     return (
         <>
             <Button variant="ghost" size="icon" onClick={() => editor.chain().focus().setTextAlign('left').run()} className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}>
