@@ -55,23 +55,19 @@ export default function RegisterForm() {
         });
     };
 
-    const handleSubmit = (values: RegisterProps) => {
-        return axios.post('/api/auth/register', {
+    const handleSubmit = async (values: RegisterProps) => {
+        const res = await axios.post('/api/auth/register', {
             name: values.name,
             email: values.email,
             password: values.password
-        })
-            .then((res) => {
-                console.log(res)
-                if (res?.data?.data) {
-                    return signIn('credentials', {
-                        email: values.email,
-                        password: values.password,
-                        redirectTo: '/app'
-                    })
-                }
-
+        });
+        if (res?.data?.data) {
+            return signIn('credentials', {
+                email: values.email,
+                password: values.password,
+                redirectTo: '/app'
             });
+        }
     };
 
     return (
