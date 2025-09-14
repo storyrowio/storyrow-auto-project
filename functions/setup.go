@@ -120,3 +120,8 @@ func ApplyAuthPrismaTemplate(templateName string, projectPath string) error {
 
 	return nil
 }
+
+func ApplyGoApiTemplate(projectPath string) error  {
+	projectRoot := lib.GetProjectRoot()
+
+}

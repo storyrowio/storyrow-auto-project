@@ -42,6 +42,7 @@ func parseFlags() functions.Config {
 	flag.BoolVar(&cfg.WithAuth, "with-auth", false, "Include NextAuth.js")
 	flag.BoolVar(&cfg.WithPrisma, "with-prisma", false, "Include Prisma ORM")
 	flag.BoolVar(&cfg.WithShadcn, "with-shadcn", false, "Include shadcn/ui")
+	flag.BoolVar(&cfg.WithGoApi, "with-go-api", false, "Include Go Server Api")
 	flag.StringVar(&cfg.TemplateName, "template", "default", "Template name")
 	flag.BoolVar(&cfg.LocalTemplate, "local-template", false, "Use local template")
 	flag.BoolVar(&cfg.UseYarn, "use-yarn", false, "Use Yarn instead of npm")
@@ -68,6 +69,11 @@ func runSetup(cfg *functions.Config) error {
 	functions.BaseDirectory = filepath.Join(lib.GetProjectRoot(), "base")
 
 	projectPath := filepath.Join(cfg.OutputDir, cfg.ProjectName)
+
+	if cfg.WithGoApi {
+		cfg.ClientOutputDir = filepath.Join(projectPath, "client")
+		cfg.ServerOutputDir = filepath.Join(projectPath, "server")
+	}
 
 	// Delete later
 	_, err := os.Stat(projectPath)
