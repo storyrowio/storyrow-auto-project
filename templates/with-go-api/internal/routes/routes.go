@@ -1,19 +1,25 @@
 package routes
 
 import (
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"with-go-api/internal/handlers"
 )
 
-func RegisterRoutes(api *gin.RouterGroup) {
+func RegisterRoutes(api *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddleware) {
 	user := api.Group("/users")
 	{
 		user.POST("/system-admin", handlers.User().CreateSystemAdmin)
-		
-		user.GET("", handlers.User().FindByQuery)
-		user.GET("/:id", handlers.User().FindByID)
-		user.POST("", handlers.User().Create)
-		user.PATCH("/:id", handlers.User().Update)
-		user.DELETE("/:id", handlers.User().Delete)
+
+		userProtected := user.Group("/")
+		{
+			userProtected.Use(authMiddleware.MiddlewareFunc())
+
+			userProtected.GET("", handlers.User().FindByQuery)
+			userProtected.GET("/:id", handlers.User().FindByID)
+			userProtected.POST("", handlers.User().Create)
+			userProtected.PATCH("/:id", handlers.User().Update)
+			userProtected.DELETE("/:id", handlers.User().Delete)
+		}
 	}
 }

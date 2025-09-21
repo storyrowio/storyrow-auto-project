@@ -2,6 +2,7 @@ package functions
 
 type Config struct {
 	ProjectName     string
+	ProjectPath     string
 	OutputDir       string
 	ClientOutputDir string
 	ServerOutputDir string

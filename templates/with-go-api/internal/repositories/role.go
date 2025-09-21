@@ -34,9 +34,7 @@ func (r *RoleRepo) FindAll() ([]models.Role, error) {
 	return results, err
 }
 
-func (r *RoleRepo) FindOneByQuery(filter bson.M) (*models.Role, error) {
-	opts := options.FindOne()
-
+func (r *RoleRepo) FindOneByQuery(filter bson.M, opts *options.FindOneOptionsBuilder) (*models.Role, error) {
 	var data models.Role
 
 	err := r.Collection.FindOne(context.Background(), filter, opts).Decode(&data)
@@ -57,7 +55,7 @@ func (r *RoleRepo) Create(request models.Role) (*models.Role, error) {
 		return nil, err
 	}
 
-	result, err := r.FindOneByQuery(bson.M{"id": request.ID})
+	result, err := r.FindOneByQuery(bson.M{"id": request.ID}, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +69,7 @@ func (r *RoleRepo) Update(request models.Role) (*models.Role, error) {
 		return nil, err
 	}
 
-	result, err := r.FindOneByQuery(bson.M{"id": request.ID})
+	result, err := r.FindOneByQuery(bson.M{"id": request.ID}, nil)
 	if err != nil {
 		return nil, err
 	}

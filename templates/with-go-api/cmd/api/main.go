@@ -10,6 +10,7 @@ import (
 	"with-go-api/internal/handlers"
 	"with-go-api/internal/middlewares"
 	"with-go-api/internal/repositories"
+	"with-go-api/internal/routes"
 )
 
 func main() {
@@ -33,15 +34,10 @@ func main() {
 
 	api := router.Group("/api")
 	{
-		protected := api.Group("/")
-		{
-			protected.Use(authMiddleware.MiddlewareFunc())
+		api.POST("/login", authMiddleware.LoginHandler)
+		api.POST("/register", handlers.Auth().Register)
 
-			protected.GET("/users", handlers.User().FindByQuery)
-		}
-
-		api.GET("/users/:id", handlers.User().FindByID)
-		//routes.RegisterRoutes(api)
+		routes.RegisterRoutes(api, authMiddleware)
 	}
 
 	err := router.Run(cfg.ServerAddress)

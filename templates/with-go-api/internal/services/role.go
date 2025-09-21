@@ -17,11 +17,11 @@ func (s *RoleService) FindAll() ([]models.Role, error) {
 }
 
 func (s *RoleService) FindById(id string) (*models.Role, error) {
-	return repositories.Role().FindOneByQuery(bson.M{"id": id})
+	return repositories.Role().FindOneByQuery(bson.M{"id": id}, nil)
 }
 
 func (s *RoleService) FindByCode(code string) (*models.Role, error) {
-	return repositories.Role().FindOneByQuery(bson.M{"code": code})
+	return repositories.Role().FindOneByQuery(bson.M{"code": code}, nil)
 }
 
 func (s *RoleService) Create(request models.Role) (*models.Role, error) {
@@ -34,4 +34,13 @@ func (s *RoleService) Update(request models.Role) (*models.Role, error) {
 
 func (s *RoleService) Delete(id string) error {
 	return repositories.Role().Delete(id)
+}
+
+func (s *RoleService) FindSystemAdminRole() *models.Role {
+	res, err := repositories.Role().FindOneByQuery(bson.M{"code": "systemAdmin"}, nil)
+	if err != nil || res == nil {
+		return nil
+	}
+
+	return res
 }

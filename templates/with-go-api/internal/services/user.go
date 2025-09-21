@@ -2,6 +2,7 @@ package services
 
 import (
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"with-go-api/internal/models"
 	"with-go-api/internal/repositories"
 )
@@ -37,23 +38,28 @@ func (s *UserService) FindByQuery(query models.UserQuery) ([]models.User, *model
 }
 
 func (s *UserService) FindById(id string, showPassword bool) (*models.User, error) {
-	result, err := repositories.User().FindOneByQuery(bson.M{"id": id}, showPassword)
+	opts := options.FindOne().SetProjection(bson.M{"password": 0})
+	if showPassword {
+		opts.SetProjection(bson.M{"password": 1})
+	}
+
+	result, err := repositories.User().FindOneByQuery(bson.M{"id": id}, opts)
 	if err != nil {
 		return nil, err
 	}
 
 	if result.RoleId != "" {
-		role, err := repositories.Role().FindOneByQuery(bson.M{"id": result.RoleId})
+		role, err := repositories.Role().FindOneByQuery(bson.M{"id": result.RoleId}, nil)
 		if err == nil && role != nil {
 			result.Role = *role
 		}
 	}
 
-	return repositories.User().FindOneByQuery(bson.M{"id": id}, showPassword)
+	return result, nil
 }
 
 func (s *UserService) FindOneByQuery(filter bson.M) (*models.User, error) {
-	return repositories.User().FindOneByQuery(filter, false)
+	return repositories.User().FindOneByQuery(filter, options.FindOne().SetProjection(bson.M{"password": 0}))
 }
 
 func (s *UserService) Create(request models.User) (*models.User, error) {

@@ -4,15 +4,12 @@ import (
 	_ "bufio"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	_ "runtime"
 	"storyrow-auto-project/functions"
 	"storyrow-auto-project/lib"
 	_ "strings"
-
-	"github.com/fatih/color"
 )
 
 func main() {
@@ -68,28 +65,24 @@ func runSetup(cfg *functions.Config) error {
 	functions.TemplateDirectory = filepath.Join(lib.GetProjectRoot(), "templates")
 	functions.BaseDirectory = filepath.Join(lib.GetProjectRoot(), "base")
 
-	projectPath := filepath.Join(cfg.OutputDir, cfg.ProjectName)
-
-	if cfg.WithGoApi {
-		cfg.ClientOutputDir = filepath.Join(projectPath, "client")
-		cfg.ServerOutputDir = filepath.Join(projectPath, "server")
+	// Delete or replace directory if exist
+	err := functions.DeleteProjectDirectory(cfg)
+	if err != nil {
+		return err
 	}
 
-	// Delete later
-	_, err := os.Stat(projectPath)
-	if err == nil {
-		log.Println("Delete Existing Project")
-		//if err := functions.DetectMissingDeps(filepath.Join(cfg.OutputDir, cfg.ProjectName)); err != nil {
-		//	color.Red("Warning: Dependency check failed: %v", err)
-		//	return fmt.Errorf("failed to install missing dependencies: %w", err)
-		//}
-		//
-		//return nil
-		err = os.RemoveAll(filepath.Join(cfg.OutputDir, cfg.ProjectName))
+	projectPath := filepath.Join(cfg.OutputDir, cfg.ProjectName)
+	cfg.ProjectPath = projectPath
+
+	err = functions.CreateProjectDirectory(cfg)
+	if err != nil {
+		return err
+	}
+
+	if cfg.WithGoApi {
+		err = functions.ApplyGoApiTemplate(cfg)
 		if err != nil {
-			fmt.Printf("Error removing directory and contents: %v\n", err)
-		} else {
-			fmt.Printf("Directory '%s' and its contents removed successfully.\n", filepath.Join(cfg.OutputDir, cfg.ProjectName))
+			return err
 		}
 	}
 
@@ -98,23 +91,23 @@ func runSetup(cfg *functions.Config) error {
 		return fmt.Errorf("failed to create Next.js app: %w", err)
 	}
 
-	if err := os.Chdir(projectPath); err != nil {
-		return err
-	}
+	//if err := os.Chdir(projectPath); err != nil {
+	//	return err
+	//}
 
-	if err := functions.ApplyAuthPrismaTemplate(cfg.TemplateName, projectPath); err != nil {
-		return fmt.Errorf("failed to apply local template: %w", err)
-	}
-
-	// 3. Install additional features
-	if err := functions.InstallFeatures(cfg); err != nil {
-		return fmt.Errorf("failed to install features: %w", err)
-	}
-
-	// 4. Detect missing dependencies
-	if err := functions.DetectMissingDeps(projectPath); err != nil {
-		color.Yellow("Warning: Dependency check failed: %v", err)
-	}
+	//if err := functions.ApplyAuthPrismaTemplate(cfg); err != nil {
+	//	return fmt.Errorf("failed to apply local template: %w", err)
+	//}
+	//
+	//// 3. Install additional features
+	//if err := functions.InstallFeatures(cfg); err != nil {
+	//	return fmt.Errorf("failed to install features: %w", err)
+	//}
+	//
+	//// 4. Detect missing dependencies
+	//if err := functions.DetectMissingDeps(projectPath); err != nil {
+	//	color.Yellow("Warning: Dependency check failed: %v", err)
+	//}
 
 	return nil
 }

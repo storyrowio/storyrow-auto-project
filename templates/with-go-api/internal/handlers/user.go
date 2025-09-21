@@ -116,7 +116,7 @@ func (h *UserHandler) CreateSystemAdmin(c *gin.Context) {
 		return
 	}
 
-	password, err := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.DefaultCost)
+	password, err := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
 	if err != nil {
 		pkg.ResponseJsonError(c, http.StatusInternalServerError, err)
 		return

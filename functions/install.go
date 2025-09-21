@@ -30,9 +30,23 @@ func GetPackageManager(cfg *Config) string {
 func CreateNextApp(cfg *Config) error {
 	color.Blue("Creating Next.js project: %s", cfg.ProjectName)
 
+	outputDir := cfg.OutputDir
+	projectName := cfg.ProjectName
+
+	if cfg.WithGoApi {
+		cfg.ClientOutputDir = filepath.Join(cfg.ProjectPath, "client")
+	}
+
+	if cfg.ClientOutputDir != "" {
+		outputDir = cfg.ClientOutputDir
+		projectName = "client"
+	}
+
+	color.Blue("Creating Next.js project directory: %s", outputDir)
+
 	args := []string{
 		"create-next-app@latest",
-		filepath.Join(cfg.OutputDir, cfg.ProjectName),
+		filepath.Join(outputDir, projectName),
 		"--ts",
 		"--tailwind",
 		"--eslint",

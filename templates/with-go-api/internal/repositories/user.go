@@ -52,13 +52,7 @@ func (r *UserRepo) FindByQuery(query models.UserQuery) ([]models.User, *models.P
 	return results, pagination, err
 }
 
-func (r *UserRepo) FindOneByQuery(filter bson.M, showPassword bool) (*models.User, error) {
-	opts := options.FindOne()
-
-	if !showPassword {
-		opts.SetProjection(bson.M{"password": -1})
-	}
-
+func (r *UserRepo) FindOneByQuery(filter bson.M, opts *options.FindOneOptionsBuilder) (*models.User, error) {
 	var user models.User
 	err := r.Collection.FindOne(context.Background(), filter, opts).Decode(&user)
 	if err != nil {
@@ -85,7 +79,7 @@ func (r *UserRepo) Create(request models.User) (*models.User, error) {
 		return nil, err
 	}
 
-	user, err := r.FindOneByQuery(bson.M{"id": request.ID}, false)
+	user, err := r.FindOneByQuery(bson.M{"id": request.ID}, options.FindOne().SetProjection(bson.M{"password": 0}))
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +93,7 @@ func (r *UserRepo) Update(request models.User) (*models.User, error) {
 		return nil, err
 	}
 
-	user, err := r.FindOneByQuery(bson.M{"id": request.ID}, false)
+	user, err := r.FindOneByQuery(bson.M{"id": request.ID}, options.FindOne().SetProjection(bson.M{"password": 0}))
 	if err != nil {
 		return nil, err
 	}

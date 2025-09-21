@@ -3,15 +3,78 @@ package functions
 import (
 	"fmt"
 	"github.com/fatih/color"
+	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
 	"storyrow-auto-project/lib"
+	"strings"
 )
 
 type SourceDestination struct {
 	Source      string
 	Destination string
+}
+
+func CreateProjectDirectory(cfg *Config) error {
+	projectPath := filepath.Join(cfg.OutputDir, cfg.ProjectName)
+
+	_, err := os.Stat(projectPath)
+	if err != nil || os.IsNotExist(err) {
+		err := os.Mkdir(projectPath, 0770)
+		if err != nil {
+			return err
+		}
+	} else if os.IsExist(err) {
+		return nil
+	}
+
+	if cfg.WithGoApi {
+		// Create client
+		clientDir := filepath.Join(projectPath, "client")
+		_, err := os.Stat(clientDir)
+		if err != nil || os.IsNotExist(err) {
+			err := os.Mkdir(clientDir, 0770)
+			if err != nil {
+				return err
+			}
+		}
+
+		// Create server
+		serverDir := filepath.Join(projectPath, "server")
+		_, err = os.Stat(serverDir)
+		if err != nil || os.IsNotExist(err) {
+			err := os.Mkdir(serverDir, 0770)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func DeleteProjectDirectory(cfg *Config) error {
+	projectPath := filepath.Join(cfg.OutputDir, cfg.ProjectName)
+
+	_, err := os.Stat(projectPath)
+	if err == nil {
+		log.Println("Delete Existing Project")
+		//if err := functions.DetectMissingDeps(filepath.Join(cfg.OutputDir, cfg.ProjectName)); err != nil {
+		//	color.Red("Warning: Dependency check failed: %v", err)
+		//	return fmt.Errorf("failed to install missing dependencies: %w", err)
+		//}
+		//
+		//return nil
+		err = os.RemoveAll(filepath.Join(cfg.OutputDir, cfg.ProjectName))
+		if err != nil {
+			fmt.Printf("Error removing directory and contents: %v\n", err)
+		} else {
+			fmt.Printf("Directory '%s' and its contents removed successfully.\n", filepath.Join(cfg.OutputDir, cfg.ProjectName))
+		}
+	}
+
+	return nil
 }
 
 func SetupNextAuthFiles() error {
@@ -66,12 +129,14 @@ func SetupNextAuthFiles() error {
 	return nil
 }
 
-func ApplyAuthPrismaTemplate(templateName string, projectPath string) error {
+func ApplyAuthPrismaTemplate(cfg *Config) error {
+	templateName := "with-auth-prisma"
 	projectRoot := lib.GetProjectRoot()
-	log.Println("ProjectRoot:", projectRoot)
+	projectPath := cfg.ProjectPath
 	templateDir := TemplateDirectory
 	baseDir := BaseDirectory
 	log.Println("Template Path:", baseDir)
+	log.Println("ProjectRoot:", projectRoot)
 
 	templatePath := filepath.Join(templateDir, templateName)
 	log.Println(" ")
@@ -121,7 +186,86 @@ func ApplyAuthPrismaTemplate(templateName string, projectPath string) error {
 	return nil
 }
 
-func ApplyGoApiTemplate(projectPath string) error  {
+func ApplyGoApiTemplate(cfg *Config) error {
+	templateName := "with-go-api"
 	projectRoot := lib.GetProjectRoot()
+	log.Println("ProjectRoot:", projectRoot)
+	templateDir := TemplateDirectory
+	baseDir := BaseDirectory
+	log.Println("Template Path:", baseDir)
 
+	templatePath := filepath.Join(templateDir, templateName)
+	log.Println(" ")
+	_, err := os.Stat(templatePath)
+	if err != nil {
+		return err
+	}
+
+	color.Blue("Applying local template: %s", templateName)
+
+	cfg.ServerOutputDir = filepath.Join(cfg.ProjectPath, "server")
+
+	directories := []SourceDestination{
+		{Source: filepath.Join(TemplateDirectory, templateName, "cmd"), Destination: filepath.Join(cfg.ServerOutputDir, "cmd")},
+		{Source: filepath.Join(TemplateDirectory, templateName, "internal"), Destination: filepath.Join(cfg.ServerOutputDir, "internal")},
+	}
+	for _, file := range directories {
+		if err := os.MkdirAll(filepath.Dir(file.Destination), 0755); err != nil {
+			return fmt.Errorf("failed to create directory for %s: %w", file.Destination, err)
+		}
+
+		color.Blue(fmt.Sprintf("Copying %s directory ...", file.Source))
+		if err := lib.CopyDir(file.Source, file.Destination); err != nil {
+			return fmt.Errorf("failed to copy %s: %w", file.Source, err)
+		}
+	}
+
+	authFiles := []SourceDestination{
+		{Source: filepath.Join(TemplateDirectory, templateName, ".env.example"), Destination: filepath.Join(cfg.ServerOutputDir, ".env.example")},
+		{Source: filepath.Join(TemplateDirectory, templateName, "go.mod"), Destination: filepath.Join(cfg.ServerOutputDir, "go.mod")},
+		{Source: filepath.Join(TemplateDirectory, templateName, "init.json"), Destination: filepath.Join(cfg.ServerOutputDir, "init.json")},
+	}
+	for _, file := range authFiles {
+		if err := os.MkdirAll(filepath.Dir(file.Destination), 0755); err != nil {
+			return fmt.Errorf("failed to create directory for %s: %w", file.Destination, err)
+		}
+
+		color.Blue(fmt.Sprintf("Copying %s file ...", file.Source))
+		if err := lib.CopyFile(file.Source, file.Destination); err != nil {
+			return fmt.Errorf("failed to copy %s: %w", file.Source, err)
+		}
+	}
+
+	oldString := "with-go-api"
+	newString := cfg.ProjectName
+
+	err = filepath.WalkDir(cfg.ServerOutputDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+
+		content, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+
+		newContent := strings.ReplaceAll(string(content), oldString, newString)
+		if newContent != string(content) {
+			err = os.WriteFile(path, []byte(newContent), 0644)
+			if err != nil {
+				return err
+			}
+			fmt.Println("Updated:", path)
+		}
+		return nil
+	})
+
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	return nil
 }
